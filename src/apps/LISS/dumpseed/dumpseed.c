@@ -436,7 +436,7 @@ void dumpout(long ms, int form)
 
   }
   
-  if ( (seed_rec->Record_Type == 'D' || seed_rec->Record_Type == 'Q'  || seed_rec->Record_Type == 'R' )
+  if ( (seed_rec->Record_Type == 'D' || seed_rec->Record_Type == 'Q'  || seed_rec->Record_Type == 'R' || seed_rec->Record_Type == 'B' )
        && analyze && (seed_rec->Number_Samps> 0))
     if (!silent)
       (void) seedanalyze(seed_rec, form, decodeformat, bufsize, 1, &currentchan->stoctx);
@@ -513,7 +513,7 @@ void dumpseed()
   
   membf = (UBYTE *) seed_rec;
 
-  if (seed_rec->Record_Type != 'D' && seed_rec->Record_Type != 'Q' && seed_rec->Record_Type != 'R') return;
+  if (seed_rec->Record_Type != 'D' && seed_rec->Record_Type != 'Q' && seed_rec->Record_Type != 'R' && seed_rec->Record_Type != 'B') return;
 
   memcpy(buff, seed_rec->Channel_ID,3);
   buff[3] = '\0';
@@ -557,7 +557,7 @@ void dumpseed()
 
   }
 
-  if (seed_rec->Record_Type == 'D' || seed_rec->Record_Type == 'Q' || seed_rec->Record_Type == 'R') 
+  if (seed_rec->Record_Type == 'D' || seed_rec->Record_Type == 'Q' || seed_rec->Record_Type == 'R' || seed_rec->Record_Type == 'B') 
     setchan(seed_rec);
 
   currentchan->totalrec ++;
