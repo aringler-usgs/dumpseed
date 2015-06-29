@@ -1,0 +1,25 @@
+LISS 2 protocol (extended) - output protocol
+
+Initial (Stream determiner)
+
+struct hdr {
+	le_word magic;     /* 29123 */
+	le_word version;   /* 1 */
+};
+
+#define PACKET_SEEDPKT 10   /* Seed data packet w/ tags */
+
+struct seedpkt {
+	le_long	size;      /* Size of entire packet */
+	le_word type;      /* Packet type PACKET_SEEDPKT */
+
+	le_long source;    /* Packet source ID - default = 0 */
+	le_long stream_id; /* Packet stream ID - default = 0 */
+
+	le_word recsiz;    /* Seed record size 256, 512, or 4096 */
+	char seed[recsiz]; /* SEED record */
+
+	le_word taglen;    /* Length of tag block */
+	char tags[taglen]; /* Tag block - strings followed by nulls */
+}
+

@@ -1,0 +1,45 @@
+# Generated automatically from Makefile.in by configure.
+
+bindir = @bindir@
+datadir = @datadir@
+exec_prefix = @exec_prefix@
+includedir = @includedir@
+infodir = @infodir@
+libdir = @libdir@
+libexecdir = @libexecdir@
+localstatedir = @localstatedir@
+mandir = @mandir@
+oldincludedir = @oldincludedir@
+prefix = @prefix@
+sbindir = @sbindir@
+sharedstatedir = @sharedstatedir@
+srcdir = @srcdir@
+sysconfdir = @sysconfdir@
+top_srcdir = @top_srcdir@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+CXXFLAGS = @CXXFLAGS@
+DEFS = @DEFS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+CHMOD = chmod
+DIRMOD = go+w
+
+all:
+	cd LISS; make all
+
+clean: 
+	rm -f *.o *.a core *~ \#*\#
+	cd LISS; make clean
+
+dist:	clean
+	rm -f Makefile
+	cd LISS; make dist
+
+install:
+	cd LISS; make install
+
+uninstall:
+	cd LISS; make uninstall
+
+

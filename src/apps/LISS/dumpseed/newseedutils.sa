@@ -1,0 +1,46 @@
+Task...  Break up dumpseed into a subroutine library and a
+set of utilities...
+
+Read from telemetry port
+
+	seedport -p port -r length -e -t timeout -l machname
+
+	-e stay on port even if it disconnects - keep trying
+	-x pass the record length down into the pipe (use
+		extended format)
+	-s output raw seed (not extended mode)
+
+Filter seed data (via select file)
+
+	seedselect -r length -x -s -t x select-file
+	
+	-x pass record length and tag keys (use extended format)
+		(automatic if input is in extended format)
+	-s output raw seed (not extended mode)
+	-t list of seed record types to keep (defaults to 'D')
+
+convert block sizes (256<->4096 512<->4096)
+
+	seedreblock -r length -o length -x 
+
+	-r input block size (ignored in extended mode)
+	-o out length
+	-x pass record length and tag keys (use extended format)
+		(automatic if input is in extended format)
+	-s output raw seed (not extended mode)
+
+Crack the data headers blockettes, and data
+
+	dumpseed (same as now)
+
+Translate BDF data into myriad formats
+
+	(This may be included into dumpseed as an output stage)
+
+Event detect the data
+
+Send data to a DAC480
+
+Possible other projects:
+
+Add response blockette parsing into dumpseed.

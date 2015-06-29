@@ -1,0 +1,59 @@
+# Generated automatically from Makefile.in by configure.
+
+bindir = @bindir@
+datadir = @datadir@
+exec_prefix = @exec_prefix@
+includedir = @includedir@
+infodir = @infodir@
+libdir = @libdir@
+libexecdir = @libexecdir@
+localstatedir = @localstatedir@
+mandir = @mandir@
+oldincludedir = @oldincludedir@
+prefix = @prefix@
+sbindir = @sbindir@
+sharedstatedir = @sharedstatedir@
+srcdir = @srcdir@
+sysconfdir = @sysconfdir@
+top_srcdir = @top_srcdir@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+CXXFLAGS = @CXXFLAGS@
+DEFS = @DEFS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+CHMOD = chmod
+DIRMOD = go+w
+
+all:	
+	cd dcc_time; make all
+	cd dcc_misc; make all
+	cd dcc_seed; make all
+	cd steim123; make all
+
+clean: 
+	rm -f *.o *.a core *~ \#*\#
+	cd dcc_time; make clean
+	cd dcc_misc; make clean
+	cd dcc_seed; make clean
+	cd steim123; make clean
+
+dist:	clean
+	rm -f Makefile
+	cd dcc_time; make dist
+	cd dcc_misc; make dist
+	cd dcc_seed; make dist
+	cd steim123; make dist
+
+install: 
+	cd dcc_time; make install
+	cd dcc_misc; make install
+	cd dcc_seed; make install
+	cd steim123; make install
+
+uninstall: 
+	cd dcc_time; make uninstall
+	cd dcc_misc; make uninstall
+	cd dcc_seed; make uninstall
+	cd steim123; make uninstall
+

@@ -1,0 +1,133 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:564: checking for gcc
+configure:677: checking whether the C compiler (gcc  ) works
+configure:693: gcc -o conftest    conftest.c  1>&5
+configure:719: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:724: checking whether we are using GNU C
+configure:733: gcc -E conftest.c
+configure:752: checking whether gcc accepts -g
+configure:814: checking for a BSD compatible install
+configure:869: checking for ranlib
+configure:898: checking how to run the C preprocessor
+configure:919: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:981: checking for errno.h
+configure:991: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1021: checking for math.h
+configure:1031: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1061: checking for ctype.h
+configure:1071: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1101: checking for unistd.h
+configure:1111: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1141: checking for memory.h
+configure:1151: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1181: checking for string.h
+configure:1191: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1221: checking for stddef.h
+configure:1231: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1261: checking for stdlib.h
+configure:1271: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1301: checking for sys/mtio.h
+configure:1311: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1341: checking for sys/ioctl.h
+configure:1351: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1381: checking for fcntl.h
+configure:1391: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1419: checking whether byte ordering is bigendian
+configure:1437: gcc -c -g -O2  conftest.c 1>&5
+configure:1452: gcc -c -g -O2  conftest.c 1>&5
+configure: In function 'main':
+configure:1447: error: 'not' undeclared (first use in this function)
+configure:1447: error: (Each undeclared identifier is reported only once
+configure:1447: error: for each function it appears in.)
+configure:1447: error: expected ';' before 'big'
+configure: failed program was:
+#line 1441 "configure"
+#include "confdefs.h"
+#include <sys/types.h>
+#include <sys/param.h>
+int main() {
+
+#if BYTE_ORDER != BIG_ENDIAN
+ not big endian
+#endif
+; return 0; }
+configure:1509: checking whether char is unsigned
+configure:1572: checking for long double
+configure:1615: checking size of int
+configure:1634: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function 'main':
+configure:1628: warning: incompatible implicit declaration of built-in function 'exit'
+configure:1654: checking size of short
+configure:1673: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function 'main':
+configure:1667: warning: incompatible implicit declaration of built-in function 'exit'
+configure:1693: checking size of long
+configure:1712: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function 'main':
+configure:1706: warning: incompatible implicit declaration of built-in function 'exit'
+configure:1733: checking for uid_t in sys/types.h
+configure:1767: checking type of array argument to getgroups
+configure:1800: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function 'main':
+configure:1795: warning: incompatible implicit declaration of built-in function 'exit'
+configure:1838: checking for ANSI C header files
+configure:1851: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1918: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function 'main':
+configure:1913: warning: incompatible implicit declaration of built-in function 'exit'
+configure:1942: checking for mode_t
+configure:1975: checking for off_t
+configure:2008: checking for pid_t
+configure:2041: checking return type of signal handlers
+configure:2063: gcc -c -g -O2  conftest.c 1>&5
+configure:2082: checking for size_t
+configure:2115: checking for uid_t in sys/types.h
+configure:2150: checking for nanosleep in -lposix4
+configure:2169: gcc -o conftest -g -O2   conftest.c -lposix4   1>&5
+/usr/bin/ld: cannot find -lposix4
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2158 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char nanosleep();
+
+int main() {
+nanosleep()
+; return 0; }
+configure:2197: checking for socket in -lsocket
+configure:2216: gcc -o conftest -g -O2   conftest.c -lsocket   1>&5
+/usr/bin/ld: cannot find -lsocket
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2205 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char socket();
+
+int main() {
+socket()
+; return 0; }
+configure:2244: checking for gethostbyname in -lnsl
+configure:2263: gcc -o conftest -g -O2   conftest.c -lnsl   1>&5
+configure:2292: checking for ANSI C header files
+configure:2396: checking whether time.h and sys/time.h may both be included
+configure:2410: gcc -c -g -O2  conftest.c 1>&5
+configure:2434: checking for strchr
+configure:2462: gcc -o conftest -g -O2   conftest.c -lnsl  1>&5
+configure:2446: warning: conflicting types for built-in function 'strchr'
+configure:2489: checking for memcpy
+configure:2517: gcc -o conftest -g -O2   conftest.c -lnsl  1>&5
+configure:2501: warning: conflicting types for built-in function 'memcpy'
+configure:2544: checking for nanosleep
+configure:2572: gcc -o conftest -g -O2   conftest.c -lnsl  1>&5
+configure:2599: checking for usleep
+configure:2627: gcc -o conftest -g -O2   conftest.c -lnsl  1>&5
+configure:2654: checking for strerror
+configure:2682: gcc -o conftest -g -O2   conftest.c -lnsl  1>&5

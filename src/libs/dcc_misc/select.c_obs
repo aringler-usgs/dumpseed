@@ -1,0 +1,499 @@
+#include <dcc_std.h>
+#include <dcc_time.h>
+
+UBYTE *alstr(UBYTE *);
+
+struct	_sel_stat {
+	struct _sel_stat *next;
+	UBYTE		*station;
+	unsigned int	addnot : 1;
+	unsigned int	class  : 1;
+};
+
+struct _sel_chan {
+	struct _sel_chan *next;
+	UBYTE		*locchannel;
+	unsigned int	addnot : 1;
+};
+
+struct _sel_date {
+	struct _sel_date *next;
+	ULONG		sjday,ejday;
+	STDTIME		sdate,edate;
+	unsigned int	addnot : 1;
+};
+
+extern STDTIME _ztime;
+
+struct _sel_chain {
+	struct _sel_chain *next;
+	struct _sel_stat *root_stat,*tail_stat;
+	struct _sel_chan *root_chan,*tail_chan;
+	struct _sel_date *root_date,*tail_date;	
+} *root_chain,*tail_chain;
+
+ULONG jdmax,jdmin;
+
+VOID sel_init()
+{
+
+	root_chain = NULL;
+	tail_chain = NULL;
+	jdmax = 0;
+	jdmin = 1<<30;
+
+}
+
+int gline=0;
+UBYTE gsel[100];
+BOOL geof=FALSE;
+
+int sel_rline(FILE *ifil)
+{
+
+	gline++;
+
+	if (!ReadLine(ifil,gsel,98)) {
+		geof = TRUE;
+		return(-2);
+	}
+
+	TrimString(gsel);
+	Upcase(gsel);
+
+	if (streq(gsel,"/")) return(-1);
+	if (streq(gsel,"//")) {
+		geof = TRUE;
+		return(-2);
+	}
+
+	if (gsel[0]=='#') return(0);		/* Comment */
+	return(strlen(gsel));
+}
+
+VOID sel_date(UBYTE *istr, struct _sel_date *new)
+{
+
+	UBYTE f1[100],f2[100];
+	UBYTE *fc,*fd;
+	int byear,eyear,bday,eday,c;
+	LONG secs;
+	STDTIME btime,etime;
+
+	btime = _ztime;
+	etime = _ztime;
+
+	if (istr[0]=='R') {	/* Date range TIME/TIME */
+		for (fd = f1, fc = &istr[1]; *fc!='/'&&*fc!='\0'; fc++) {
+			if (isspace(*fc)) continue;
+			*fd++ = *fc;
+		}
+		*fd++ = '\0';		
+		if (*fc=='/') fc++;	/* Skip the slash */
+		for (fd = f2; *fc!='\0'; fc++) {
+			if (isspace(*fc)) continue;
+			*fd++ = *fc;
+		}
+		*fd++ = '\0';		
+		if(f2[0]=='\0') bombout(EXIT_ABORT,
+			"Date error in sel file %s line %d\n",istr,gline);
+			
+		btime = ST_ParseTime(f1);
+		etime = ST_ParseTime(f2);
+
+		if (btime.year==0||etime.year==0) bombout(EXIT_ABORT,
+			"Date error in sel file %s line %d\n",istr,gline);
+
+	} else 
+	if (istr[0]=='D') {	/* Time duration TIME/Seconds */
+		for (fd = f1, fc = &istr[1]; *fc!='/'&&*fc!='\0'; fc++) {
+			if (isspace(*fc)) continue;
+			*fd++ = *fc;
+		}
+		*fd++ = '\0';		
+		for (fd = f2; *fc!='\0'; fc++) {
+			if (isspace(*fc)) continue;
+			*fd++ = *fc;
+		}
+		*fd++ = '\0';		
+		if(f2[0]=='\0') bombout(EXIT_ABORT,
+			"Date error in sel file %s line %d\n",istr,gline);
+			
+		btime = ST_ParseTime(f1);
+		secs = atol(f2);
+
+		if (btime.year==0||secs<=0) bombout(EXIT_ABORT,
+			"Date error in sel file %s line %d\n",istr,gline);
+
+		etime = ST_AddToTime(btime,0,0,0,secs,0);
+
+	} else {
+
+		FOREVER {
+			fc = strchr(istr,',');
+			if (fc==NULL) break;
+			*fc = ' ';
+		}
+
+		c = sscanf(istr,"%d %d %d %d",&byear,&bday,&eyear,&eday);
+
+		if (c!=4) bombout(EXIT_ABORT,
+			"Date error in sel file %s line %d\n",istr,gline);
+
+		btime.year = byear;
+		btime.day = bday;
+		etime.year = eyear;
+		etime.day = eday;
+		etime.hour = 23;
+		etime.minute = 59;
+		etime.second = 59;
+		etime.msec = 999;
+
+	}
+
+	new->sdate = btime;
+	new->edate = etime;
+
+	new->sjday = _julday(btime.year,1,btime.day);
+	new->ejday = _julday(etime.year,1,etime.day);
+
+	if (new->sjday>jdmax) jdmax = new->sjday;
+	if (new->ejday>jdmax) jdmax = new->ejday;
+	if (new->sjday<jdmin) jdmin = new->sjday;
+	if (new->ejday<jdmin) jdmin = new->ejday;
+
+}
+
+VOID listab()
+{
+
+	struct _sel_chain *loopchain;
+	struct _sel_stat *loopstat;
+	struct _sel_chan *loopchan;
+	struct _sel_date *loopdate;
+	int chan=0;
+
+	for (loopchain=root_chain; loopchain!=NULL; loopchain=loopchain->next) {
+	    chan++;
+	    printf("Chain %d\n",chan);
+
+	    for (loopdate=loopchain->root_date; loopdate!=NULL; 
+		loopdate=loopdate->next) {
+
+		printf("  Date Range %d->%d (%c)\n",
+			loopdate->sjday,loopdate->ejday,
+				loopdate->addnot?'+':'-');
+
+	    }
+
+	    for (loopstat=loopchain->root_stat; loopstat!=NULL;
+		loopstat=loopstat->next) {
+
+		printf("  Station %s (%c)\n",loopstat->station,
+				loopstat->addnot?'+':'-');
+	    }
+
+	    for (loopchan=loopchain->root_chan; loopchan!=NULL;
+		loopchan=loopchan->next) {
+
+		printf("  Channel %s (%c)\n",loopchan->locchannel,
+				loopchan->addnot?'+':'-');
+
+	    }
+
+	}
+}
+
+
+VOID sel_loadup(UBYTE *filename)
+{
+	
+	int a;
+	FILE *infile;
+	struct _sel_chain *newchain;
+	struct _sel_stat *newstat;
+	struct _sel_chan *newchan;
+	struct _sel_date *newdate;
+
+	sel_init();
+
+	infile = fopen(filename,"r");
+	if (infile==NULL) bombout(EXIT_ABORT,"Cannot find sel file %s",filename);
+
+	while (!geof) {		/* Main loop */
+	   newchain = malloc(sizeof(struct _sel_chain));
+	   if (newchain==NULL) bombout(EXIT_NOMEM,"_sel_chain");
+	   newchain->next = NULL;
+	   newchain->root_stat=newchain->tail_stat = NULL;
+	   newchain->root_chan=newchain->tail_chan = NULL;
+	   newchain->root_date=newchain->tail_date = NULL;
+
+	   if (tail_chain==NULL)	root_chain = newchain;
+	   else tail_chain->next = newchain;
+	   tail_chain = newchain;
+
+	   while (!geof) {	/* Station Loop */
+		a = sel_rline(infile);
+		if (a== 0) continue;
+		if (a== -1) break;
+		if (a== -2) break;
+
+		newstat = malloc(sizeof(struct _sel_stat));
+		newstat->next = NULL;
+		newstat->class = FALSE;
+		
+		switch(gsel[0]) {
+		case '+':
+			newstat->addnot = TRUE;
+			break;
+		case '-':
+			newstat->addnot = FALSE;
+			break;
+		default:
+			bombout(EXIT_ABORT,"Bad sel/unsel char line %d (%s)\n",
+				gline,filename);
+		}
+
+		if (gsel[1]=='#') 
+			bombout(EXIT_ABORT,"Classes not imp on line %d (%s)\n",
+				gline,filename);
+
+		if (gsel[1]=='\0') 
+			bombout(EXIT_ABORT,"No station specified line %d (%s)\n",
+				gline,filename);
+		
+		newstat->station = alstr(&gsel[1]);		
+
+		if (newchain->tail_stat==NULL) newchain->root_stat = newstat;
+		else	newchain->tail_stat->next = newstat;
+		newchain->tail_stat = newstat;
+
+	   }
+
+	   while (!geof) {	/* Channel Loop */
+		a = sel_rline(infile);
+		if (a==0) continue;
+		if (a== -1) break;
+		if (a== -2) break;
+
+		newchan = malloc(sizeof(struct _sel_chan));
+		newchan->next = NULL;
+		
+		switch(gsel[0]) {
+		case '+':
+			newchan->addnot = TRUE;
+			break;
+		case '-':
+			newchan->addnot = FALSE;
+			break;
+		default:
+			bombout(EXIT_ABORT,"Bad sel/unsel char line %d (%s)\n",
+				gline,filename);
+		}
+
+		if (gsel[1]=='\0') 
+			bombout(EXIT_ABORT,"No chan specified line %d (%s)\n",
+				gline,filename);
+		
+		newchan->locchannel = alstr(&gsel[1]);		
+
+		if (newchain->tail_chan==NULL) newchain->root_chan = newchan;
+		else	newchain->tail_chan->next = newchan;
+		newchain->tail_chan = newchan;
+	   }
+
+	   while (!geof) {	/* Date Loop */
+		a = sel_rline(infile);
+		if (a==0) continue;
+		if (a== -1) break;
+		if (a== -2) break;
+
+		newdate = malloc(sizeof(struct _sel_date));
+		newdate->next = NULL;
+		
+		switch(gsel[0]) {
+		case '+':
+			newdate->addnot = TRUE;
+			break;
+		case '-':
+			newdate->addnot = FALSE;
+			break;
+		default:
+			bombout(EXIT_ABORT,"Bad sel/unsel char line %d (%s)\n",
+				gline,filename);
+		}
+
+		if (gsel[1]=='\0') 
+			bombout(EXIT_ABORT,"No date specified line %d (%s)\n",
+				gline,filename);
+		
+		sel_date(&gsel[1],newdate);
+
+		if (newchain->tail_date==NULL) newchain->root_date = newdate;
+		else	newchain->tail_date->next = newdate;
+		newchain->tail_date = newdate;
+	   }
+
+	}
+
+	fclose(infile);
+	listab();
+}
+
+BOOL sel_interesting(ULONG jday,UBYTE *station,UBYTE *channel)
+{
+
+	struct _sel_chain *loopchain;
+	struct _sel_stat *loopstat;
+	struct _sel_chan *loopchan;
+	struct _sel_date *loopdate;
+
+	BOOL go;
+
+	for (loopchain=root_chain; loopchain!=NULL; loopchain=loopchain->next) {
+
+	    go = FALSE;
+
+	    for (loopdate=loopchain->root_date; loopdate!=NULL; 
+		loopdate=loopdate->next) {
+
+		if (jday>=loopdate->sjday&&jday<=loopdate->ejday) 
+			go = loopdate->addnot;
+	    }
+
+	    if (!go) continue;
+
+	    if (station==NULL) return(TRUE);	/* No other questions */
+
+	    go = FALSE;
+
+	    for (loopstat=loopchain->root_stat; loopstat!=NULL;
+		loopstat=loopstat->next) {
+
+		if (WildMatch(loopstat->station, station)) 
+			go = loopstat->addnot;		
+
+	    }
+
+	    if (!go) continue;
+
+	    if (channel==NULL) return(TRUE);	/* Don't care bout chans */
+
+	    go = FALSE;
+
+	    for (loopchan=loopchain->root_chan; loopchan!=NULL;
+		loopchan=loopchan->next) {
+
+		if (WildMatch(loopchan->locchannel, channel))
+			go = loopchan->addnot;
+
+	    }
+
+	    if (go) return(TRUE);
+
+	}
+
+	return(go);
+}
+
+BOOL sel_stat_interesting(UBYTE *station,UBYTE *channel)
+{
+
+	struct _sel_chain *loopchain;
+	struct _sel_stat *loopstat;
+	struct _sel_chan *loopchan;
+
+	BOOL go = FALSE;
+
+	for (loopchain=root_chain; loopchain!=NULL; loopchain=loopchain->next) {
+
+	    if (station==NULL) return(TRUE);	/* No other questions */
+
+	    go = FALSE;
+
+	    for (loopstat=loopchain->root_stat; loopstat!=NULL;
+		loopstat=loopstat->next) {
+
+		if (WildMatch(loopstat->station, station)) 
+			go = loopstat->addnot;		
+
+	    }
+
+	    if (!go) continue;
+
+	    if (channel==NULL) return(TRUE);	/* Don't care bout chans */
+
+	    go = FALSE;
+
+	    for (loopchan=loopchain->root_chan; loopchan!=NULL;
+		loopchan=loopchan->next) {
+
+		if (WildMatch(loopchan->locchannel, channel))
+			go = loopchan->addnot;
+
+	    }
+
+	    if (go) return(TRUE);
+
+	}
+
+	return(go);
+}
+
+BOOL sel_date_interesting(STDTIME btime,STDTIME etime,UBYTE *station,
+	UBYTE *channel)
+{
+
+	struct _sel_chain *loopchain;
+	struct _sel_stat *loopstat;
+	struct _sel_chan *loopchan;
+	struct _sel_date *loopdate;
+
+	BOOL go;
+
+	for (loopchain=root_chain; loopchain!=NULL; loopchain=loopchain->next) {
+
+	    go = FALSE;
+
+	    for (loopdate=loopchain->root_date; loopdate!=NULL; 
+		loopdate=loopdate->next) {
+
+		if (ST_TimeComp(btime,loopdate->edate)<=0&&
+		    ST_TimeComp(etime,loopdate->sdate)>=0)
+			go = loopdate->addnot;
+	    }
+
+	    if (!go) continue;
+
+	    if (station==NULL) return(TRUE);	/* No other questions */
+
+	    go = FALSE;
+
+	    for (loopstat=loopchain->root_stat; loopstat!=NULL;
+		loopstat=loopstat->next) {
+
+		if (WildMatch(loopstat->station, station)) 
+			go = loopstat->addnot;		
+
+	    }
+
+	    if (!go) continue;
+
+	    if (channel==NULL) return(TRUE);	/* Don't care bout chans */
+
+	    go = FALSE;
+
+	    for (loopchan=loopchain->root_chan; loopchan!=NULL;
+		loopchan=loopchan->next) {
+
+		if (WildMatch(loopchan->locchannel, channel))
+			go = loopchan->addnot;
+
+	    }
+
+	    if (go) return(TRUE);
+
+	}
+
+	return(go);
+}

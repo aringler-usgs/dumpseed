@@ -1,0 +1,165 @@
+.TH seedport 1 "13 January 1998"
+.IX seedport
+.SH NAME
+seedport - connect to a LISS1 or LISS2 server and output SEED to stdout
+.SH SYNOPSIS
+.B seedport
+.B -x
+.B -v
+.B -b 
+.IR size
+.B -s
+.IR selectfile
+.B -p
+.IR tcp port
+.B -L
+.B -c
+.IR mask
+.B -f 
+.IR secs
+.B -i
+.IR sequence
+.B -P
+.IR pidfile
+.I host
+.SH DESCRIPTION
+Connect to a 
+.IR LISS-1
+(netport) or a 
+.IR LISS-2
+(extended mode) port and pull a real-time data stream from it.
+.SH OPTIONS
+.PP
+The different flags specify the method for connecting to a port.
+.TP
+.B -x
+Output data to the standard output in LISS-2 (extended mode).
+Extended mode is comprised simply of SEED records enclosed
+in a representation which automatically specifies the source, format,
+and size of the data.  If this flag is not used, data will be
+send to standard output in raw SEED.
+.TP
+.B -v
+Emit diagnostic messages to standard error.  Otherwise 
+.IR seedport
+will be quiet.
+.TP
+.B -L 
+Connect into the LISS-2 network automatically.  There is no
+need with this option to specify host names or port numbers.
+.IR Seedport
+will query information servers on the internet to service
+your request.
+.TP
+.B -b
+.IR size
+.br
+Override the default record sizes.  This corresponds with the
+SEED
+.I logical record size.
+The default record size for files is 512.
+.TP
+.B -p
+.IR port
+.br
+The port number on the LISS-1 (or LISS-2) compatible server that 
+.IR seedport
+will attach to.  This port is a TCP socket.  The default
+if unspecified is 4000.
+.TP
+.B -s
+.IR selectfile
+.br
+Allows complex selection to be performed on the input data
+stream.  Combinations of Network, Station, Location, Channel
+and time-range can be used.  Please see the 
+.BR selectfile (4)
+manual page for information on how to construct a select file.
+If 
+.IR seedport
+is connecting to a bi-directional LISS-2 port, the filter will
+be sent up the server.  This can greatly lower the network load
+by transmitting only the desired data, instead of sending it
+all and throwing away undesired data at the client end.
+.TP
+.B -E
+Ignore End of Files, or network errors on the port.  Will
+automatically reconnect if the port is dropped.  Note that if
+this option is set, the program will never exit.
+.TP
+.B -c
+.IR filemask
+.br
+Instead of sending the data received to the standard output,
+and series of files will be created with the name specified
+in the
+.IR filemask .
+The mask must contain the %d (C printf format) characters, such 
+as data%d or data%04d (must be able to hold a 4 digit number).
+These will be substituted with the file number.  A new file
+will be created with the next sequence number each time the
+timer expires.  The file that is current being written will
+have the string 
+.IR _live
+appended to it.
+.TP
+.B -f
+.IR seconds
+.br
+Flush and start a new capture file (-c above) after this number
+of seconds (the timer value).  Defaults to 3600 (1 hour).
+.TP
+.B -i
+.IR sequence
+.br
+Set the file number of the initial capture file to this number.
+The default is 1.
+.TP
+.B -P
+.IR pidfile
+.br
+Keep a watchdog file.
+When selected, a filename of
+.RI /tmp/ pidfile .tmp
+(where pidfile is
+the value specified here) is written out every time a record
+is processed.
+There may be some pathological socket I/O
+situations that
+.B seedport
+might not be able to recover from (hopefully we've
+found and fixed most of these).  A separate watchdog
+process can keep an eye on a 
+.B seedport
+process via this file and kill it and restart it if it
+becomes hung.  The pidfile contains the pid of the process
+and the epochal time when a record was last processed.  An
+initial entry is placed in the file when the program is
+started.  This will keep the watchdog from killing the
+program before any input comes in.
+.PP
+The argument is either the host name (or IP address) of the LISS-1
+or LISS-2 server.
+.SH EXAMPLES
+Get data from the COLA LISS-1 server:
+.RS
+.B "example% seedport -p 4060 asl6.cr.usgs.gov"
+.RE
+.SH HISTORY
+.IR seedport
+was extracted from 
+.BR dumpseed(1)
+to form a standalone program to permit
+users to receive raw seed from a LISS.
+.SH "SEE ALSO"
+.BR dumpseed(1) ,
+.BR getpid(2) ,
+.BR time(2) ,
+.BR selectfile(4) ,
+.BR SEED(4) 
+.SH AUTHOR
+Public Domain Software by Scott Halbert - Allied Signal Technical
+Services Corporation under contract to the Albuquerque Seismological
+Laboratory - United States Geological Survey - Department of Interior,
+United States, North American Continent, Earth/Sol 3, Sagitarius Arm of
+Milky Way Galaxy.

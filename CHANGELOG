@@ -1,0 +1,18 @@
+21-Jul-2003     GTM     Version 2.0.0
+                        Package now consists of dumpseed, seedport, seedfilter and seedforker
+
+28-Oct-2002     GTM     Version 1.01
+                        Altered the following to implement data quality indicator flags of D, Q or R
+				combiner:  combiner.c
+				cutter:    steimdump.c
+				dumpseed:  dumpseed.c, prtseedbdf.c, prtseedrec.c, steimdump.c
+				seedspans: seedspans.c
+                        Corrected and enhanced Usage for dumpseed
+
+??-Sep-97	SH	RELEASE 0.0
+
+16-Sep-97	SH	Port non-oracle parts of DCC libraries to
+			portable library.  Redo all makefiles and
+			configuration to GNU autoconf
+
+[Beginning of Project]

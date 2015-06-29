@@ -1,0 +1,78 @@
+# Main Makefile
+
+bindir = @bindir@
+datadir = @datadir@
+exec_prefix = @exec_prefix@
+includedir = @includedir@
+infodir = @infodir@
+libdir = @libdir@
+libexecdir = @libexecdir@
+localstatedir = @localstatedir@
+mandir = @mandir@
+oldincludedir = @oldincludedir@
+prefix = @prefix@
+sbindir = @sbindir@
+sharedstatedir = @sharedstatedir@
+srcdir = @srcdir@
+sysconfdir = @sysconfdir@
+top_srcdir = @top_srcdir@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+CXXFLAGS = @CXXFLAGS@
+DEFS = @DEFS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+CHMOD = chmod
+DIRMOD = go+w
+
+DCCPACKAGE=@dccpackage@
+DCCVERSION=@dccversion@
+
+all:	
+	cd src/utils; make all
+	cd src/libs; make all
+	cd src/apps; make all
+
+install: installdirs
+	cd src/libs; make install
+	cd src/apps; make install
+
+uninstall: 
+	cd src/libs; make uninstall
+	cd src/apps; make uninstall
+
+clean: 
+	rm -f *.o *.a core *~ \#*\#
+	cd src/libs; make clean
+	cd src/apps; make clean
+	cd src/utils; make clean
+
+dist:	clean
+	rm -f include/dcc_config.h
+	rm -f config.* Makefile
+	rm -f libs/*.a
+	cd src/libs; make dist
+	cd src/apps; make dist
+	cd src/utils; make dist
+
+distribution: dist
+	rm -f ../${DCCPACKAGE}-${DCCVERSION}.tar*
+	cd ..; tar -cvf ${DCCPACKAGE}-${DCCVERSION}.tar \
+		${DCCPACKAGE}-${DCCVERSION}
+	gzip -9vc ../${DCCPACKAGE}-${DCCVERSION}.tar \
+		>../${DCCPACKAGE}-${DCCVERSION}.tar.gz
+	compress ../${DCCPACKAGE}-${DCCVERSION}.tar
+
+release: distribution
+	cp -f ../${DCCPACKAGE}-${DCCVERSION}.tar.* /r08/ftp/pub/LISS/dist
+
+installdirs: mkinstalldirs
+	$(srcdir)/mkinstalldirs $(bindir) $(datadir) $(libdir) $(infodir) \
+		$(mandir) $(mandir)/man1 $(mandir)/man4
+
+configure: configure.in
+	autoconf
+
+include/dcc_include.h.in: configure.in
+	autoheader
+

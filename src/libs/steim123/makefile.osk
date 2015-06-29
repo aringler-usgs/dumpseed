@@ -1,0 +1,47 @@
+# for SPARC SUN-OS 4.1.3 ANSI C:
+# CC= acc
+# CFLAGS= -Xc -sb -O4 -dalign
+# INCLUDE= .
+# LFLAGS= -sb
+# LDLIBS= 
+
+
+CC= cc
+CFLAGS= -t=/r0 -M=10k  -k=2w -o=2 -DOSK 
+INCLUDE= .
+LFLAGS= -t=/r0 -M=10k  -k=2w 
+LDLIBS= 
+
+
+steim123: steim123.r steimlib.r sprofile.r
+  $(CC) $(LFLAGS) -f=steim123 \
+  steim123.r steimlib.r sprofile.r $(LDLIBS)
+
+
+srdseed: srdseed.r steimlib.r 
+  $(CC) $(LFLAGS) -f=srdseed \
+  srdseed.r steimlib.r $(LDLIBS)
+
+
+swrseed: swrseed.r steimlib.r 
+  $(CC) $(LFLAGS) -f=swrseed \
+  swrseed.r steimlib.r $(LDLIBS)
+
+
+steim123.r: $(INCLUDE)/steim.h $(INCLUDE)/sprofile.h steim123.c
+  $(CC) -r $(CFLAGS) -V=$(INCLUDE) steim123.c
+
+steimlib.r: $(INCLUDE)/steim.h steimlib.c
+  $(CC) -r $(CFLAGS) -V=$(INCLUDE) steimlib.c
+
+sprofile.r: $(INCLUDE)/steim.h $(INCLUDE)/sprofile.h sprofile.c
+  $(CC) -r $(CFLAGS) -V=$(INCLUDE) sprofile.c
+
+
+srdseed.r: $(INCLUDE)/steim.h srdseed.c
+  $(CC) -r $(CFLAGS) -V=$(INCLUDE) srdseed.c
+
+swrseed.r: $(INCLUDE)/steim.h swrseed.c
+  $(CC) -r $(CFLAGS) -V=$(INCLUDE) swrseed.c
+
+

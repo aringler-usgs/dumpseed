@@ -1,0 +1,3 @@
+
+#undef DCCPACKAGE
+#undef DCCVERSION
