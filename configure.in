@@ -68,6 +68,5 @@ AC_OUTPUT(Makefile \
 		src/apps/LISS/Makefile \
 			src/apps/LISS/dumpseed/Makefile \
 			src/apps/LISS/seedfilter/Makefile \
-			src/apps/LISS/seedport/Makefile \
-			src/apps/LISS/seedforker/Makefile)
+			src/apps/LISS/seedport/Makefile)
 

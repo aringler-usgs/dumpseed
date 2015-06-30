@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host asldcc01:
+# on host aslres01:
 #
 # ./configure 
 #
@@ -26,9 +26,9 @@ do
 done
 
 ac_given_srcdir=.
-ac_given_INSTALL="/usr/bin/install -c"
+ac_given_INSTALL="install"
 
-trap 'rm -fr Makefile 	src/utils/Makefile 	src/libs/Makefile 		src/libs/dcc_time/Makefile 		src/libs/dcc_misc/Makefile 		src/libs/dcc_seed/Makefile 		src/libs/steim123/Makefile 	src/apps/Makefile 		src/apps/LISS/Makefile 			src/apps/LISS/dumpseed/Makefile 			src/apps/LISS/seedfilter/Makefile 			src/apps/LISS/seedport/Makefile 			src/apps/LISS/seedforker/Makefile include/dcc_config.h conftest*; exit 1' 1 2 15
+trap 'rm -fr Makefile 	src/utils/Makefile 	src/libs/Makefile 		src/libs/dcc_time/Makefile 		src/libs/dcc_misc/Makefile 		src/libs/dcc_seed/Makefile 		src/libs/steim123/Makefile 	src/apps/Makefile 		src/apps/LISS/Makefile 			src/apps/LISS/dumpseed/Makefile 			src/apps/LISS/seedfilter/Makefile 			src/apps/LISS/seedport/Makefile include/dcc_config.h conftest*; exit 1' 1 2 15
 
 # Protect against being on the right side of a sed subst in config.status.
 sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
@@ -101,7 +101,7 @@ if test -z "$ac_sed_cmds"; then
   ac_sed_cmds=cat
 fi
 
-CONFIG_FILES=${CONFIG_FILES-"Makefile 	src/utils/Makefile 	src/libs/Makefile 		src/libs/dcc_time/Makefile 		src/libs/dcc_misc/Makefile 		src/libs/dcc_seed/Makefile 		src/libs/steim123/Makefile 	src/apps/Makefile 		src/apps/LISS/Makefile 			src/apps/LISS/dumpseed/Makefile 			src/apps/LISS/seedfilter/Makefile 			src/apps/LISS/seedport/Makefile 			src/apps/LISS/seedforker/Makefile"}
+CONFIG_FILES=${CONFIG_FILES-"Makefile 	src/utils/Makefile 	src/libs/Makefile 		src/libs/dcc_time/Makefile 		src/libs/dcc_misc/Makefile 		src/libs/dcc_seed/Makefile 		src/libs/steim123/Makefile 	src/apps/Makefile 		src/apps/LISS/Makefile 			src/apps/LISS/dumpseed/Makefile 			src/apps/LISS/seedfilter/Makefile 			src/apps/LISS/seedport/Makefile"}
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
   # Support "outfile[:infile[:infile...]]", defaulting infile="outfile.in".
   case "$ac_file" in

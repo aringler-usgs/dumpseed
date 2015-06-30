@@ -2815,8 +2815,7 @@ trap 'rm -fr `echo "Makefile \
 		src/apps/LISS/Makefile \
 			src/apps/LISS/dumpseed/Makefile \
 			src/apps/LISS/seedfilter/Makefile \
-			src/apps/LISS/seedport/Makefile \
-			src/apps/LISS/seedforker/Makefile include/dcc_config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+			src/apps/LISS/seedport/Makefile include/dcc_config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2908,8 +2907,7 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile \
 		src/apps/LISS/Makefile \
 			src/apps/LISS/dumpseed/Makefile \
 			src/apps/LISS/seedfilter/Makefile \
-			src/apps/LISS/seedport/Makefile \
-			src/apps/LISS/seedforker/Makefile"}
+			src/apps/LISS/seedport/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

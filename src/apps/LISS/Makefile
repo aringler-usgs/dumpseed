@@ -29,26 +29,31 @@ DIRMOD = go+w
 all:
 	cd dumpseed; make all
 	cd seedport; make all
+	cd seedforker; make all
 	cd seedfilter; make all
 
 clean: 
 	rm -f *.o *.a core *~ \#*\#
 	cd dumpseed; make clean
 	cd seedport; make clean
+	cd seedforker; make clean
 	cd seedfilter; make clean
 
 dist:	clean
 	rm -f Makefile
 	cd dumpseed; make dist
 	cd seedport; make dist
+	cd seedforker; make dist
 	cd seedfilter; make dist
 
 install:
 	cd dumpseed; make install
 	cd seedport; make install
+	cd seedforker; make install
 	cd seedfilter; make install
 
 uninstall:
 	cd dumpseed; make uninstall
 	cd seedport; make uninstall
+	cd seedforker; make uninstall
 	cd seedfilter; make uninstall

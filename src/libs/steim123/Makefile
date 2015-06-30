@@ -33,7 +33,7 @@ DCC_INCLUDE = ../../../include
 DCC_LIB = ../../../lib
 DCC_BIN = ${prefix}/bin
 
-INSTALL = /usr/bin/install -c
+INSTALL = ../../../install
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 CC = gcc
